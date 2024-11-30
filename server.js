@@ -1,9 +1,26 @@
+// clean arquitecture: 
+// 1 organizacion de carpetas
+// 2 implementar sequelize en el codigo
+// 3 mejorar las respuestas del los metodos
+// 4 crear frontend 
+// rule: - de la rama principal (master) sacar otra rama si se hace una modificacion
+//       - se sube la rama creada a git 
+//       - se realiza el approbal de los participantes 
+//       - se mergea la rama que saco uno de los participantes 
+
+// actividades: 
+// dylon: organizacion de carpetas y arquitectura
+// daniel: sequelize implemetacion en el codigo y base de datos
+// laura: revisar documentacion "clean architecture docs" y estudiar codigo. 
+
+
+
 const express = require('express');
-const mysql2 = require('mysql2/promise');
+const mysql2 = require('mysql2/promise'); // sequelize 
 const app = express();
 const port = 3000;
 
-const pool = mysql2.createPool({
+const pool = mysql2.createPool({ // cambia con sequelize
     host: 'localhost',
     user: 'aprendiz',
     password: 'S3Na2024*',
@@ -12,7 +29,7 @@ const pool = mysql2.createPool({
 
 app.use(express.json());
 
-app.get('/', (request, response) => {
+app.get('/', (request, response) => { 
     try {
         response.send('¡Hola ADSO Noche!');
     } catch (error) {
@@ -20,8 +37,8 @@ app.get('/', (request, response) => {
         response.status(500).json({message: "contacte a soporte"});
     }
 });
-
-app.get('/users', async (request, response) => {
+// bloque de codigo que cambia sequelize
+app.get('/users', async (request, response) => {  
     try {
         const [users] = await pool.query('SELECT * FROM users');
         response.json(users);
@@ -115,7 +132,7 @@ app.delete('/user/:id', async (request, response) => {
         if (user.affectedRows === 0) {
             return response.status(404).json({ message: "usuario no encontrado"});
         }
-        response.json({message: `usuario ${userId} ha sido eliminado`});
+        response.json({message: `usuario ${userId} ha sido eliminado`}); //comillas simples `backtip` concatena variables
     } catch (error) {
         console.error(error);
         response.status(500).json({message: "contacte a soporte"});
