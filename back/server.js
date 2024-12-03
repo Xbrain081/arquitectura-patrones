@@ -83,21 +83,12 @@ app.put('/user/:id', async (request, response) => {
     try {
         const userId = parseInt(request.params.id);
         const { name, email, age } = request.body;
-        if (!name) {
-            return response.status(400).json({ message: "El campo 'name' es obligatorio" });
-        } else if (!email) {
-            return response.status(400).json({ message: "El campo 'email' es obligatorio" });
-        } else if (!age) {
-            return response.status(400).json({ message: "El campo 'age' es obligatorio" });
-        }
-        const [user] = await pool.query(
-            'UPDATE users SET name = ?, email = ?, age = ? WHERE id = ?',
-            [name, email, age, userId]
-        );
-        if (user.affectedRows === 0) {
+        const user = await User.findByPk(userId);
+        if (!user) {
             return response.status(404).json({ message: "Usuario no encontrado" });
         }
-        response.json({ id: userId, name, email, age });
+        await user.update({ name, email, age });
+        response.json(user);
     } catch (error) {
         console.error(error);
         response.status(500).json({ message: "Contacte a soporte" });
@@ -106,22 +97,17 @@ app.put('/user/:id', async (request, response) => {
 
 app.patch('/user/:id', async (request, response) => {
     try {
-    const userId = parseInt(request.params.id);
-    const { name, email, age } = request.body;
-    if (!name && !email && !age) {
-        return response.status(400).json({message: "no se proporcionaron datos para actualizar"});
-    }
-        const [result] = await pool.query(
-            'UPDATE users SET name = IFNULL(?, name), email = IFNULL(?, email), age = IFNULL(?, age) WHERE id = ?',
-            [name, email, age, userId]
-        );
-        if (result.affectedRows === 0) {
-            return response.status(404).json({message: "usuario no encontrado"});
+        const userId = parseInt(request.params.id);
+        const { name, email, age } = request.body;
+        const user = await User.findByPk(userId);
+        if (!user) {
+            return response.status(404).json({ message: "Usuario no encontrado" });
         }
-        response.json({id: userId, name, email, age});
+        await user.update({ name, email, age }, { fields: ['name', 'email', 'age'] });
+        response.json(user);
     } catch (error) {
         console.error(error);
-        response.status(500).json({message: "contacte a soporte"});
+        response.status(500).json({ message: "Contacte a soporte" });
     }
 });
 
