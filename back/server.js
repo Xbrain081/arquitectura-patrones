@@ -62,17 +62,15 @@ app.get('/user/:id', async (request, response) => {
     }
 });
 
-app.post('/users', async (request, response) => {
+app.post('/users', async (request, response) => { //danny
     try {
         const { name, email, age } = request.body;
-    if (!name || !email || !age) {
-        return response.status(400).json({message: "Todos los campos son obligatorios"});
-    }
-    const [newUser] = await pool.query(
-        'INSERT INTO users (name, email, age) VALUES (?, ?, ?)',
-        [name, email, age]
-    );
-    response.status(201).json({id: newUser.insertId, name, email, age});
+        if(!name || !email || !age) {
+            return response.status(400).json({message:"Todos los campos son obligatorios"});
+        }
+        const newUser = await user.create(name, email, age);
+        response.status(201).json(newUser);
+
     } catch (error) {
         console.error(error);
         response.status(500).json({message: "contacte a soporte"});
@@ -111,14 +109,17 @@ app.patch('/user/:id', async (request, response) => {
     }
 });
 
-app.delete('/user/:id', async (request, response) => {
+app.delete('/user/:id', async (request, response) => {//danny
     try {
-        const userId = parseInt(request.params.id);
-        const [user] = await pool.query('DELETE FROM users WHERE id = ?', [userId]);
-        if (user.affectedRows === 0) {
-            return response.status(404).json({ message: "usuario no encontrado"});
+        const userId = parseInt(request.params.id); //parsea el numero a entero para que flujo se cumpla
+        const user = await user.findByPk(userId);
+        if(!user){
+            return response.status(404).json({message:"Usuario no encontrado"});
         }
-        response.json({message: `usuario ${userId} ha sido eliminado`}); //comillas simples `backtip` concatena variables
+        await user.destroy();
+        response.json({message:`Usuario de ${userId} eliminado corretamente`});
+
+
     } catch (error) {
         console.error(error);
         response.status(500).json({message: "contacte a soporte"});
