@@ -1,17 +1,19 @@
+//configura y conecta la base de datos con Sequelize.
 const { Sequelize } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
-class Database {
-    constructor() {
-        if (!Database.instance) {
-            this.sequelize = new Sequelize('mysql://root:S3Na2024*@localhost:3306/usersAdmin');
-            Database.instance = this;
-        }  
-        return Database.instance;
-    }
+const defineUserModel = (sequelize) => {
+    return sequelize.define('User', {
+        name: { type: DataTypes.STRING, allowNull: false },
+        email: { type: DataTypes.STRING, allowNull: false },
+        age: { type: DataTypes.INTEGER, allowNull: false }
+    }, {
+        tableName: 'users', // Nombre de la tabla en la base de datos
+        timestamps: false   // No se utilizarán createdAt ni updatedAt
+    });
+};
 
-    getsequelize () {
-        return this.sequelize;
-    }
-}
-
-module.exports = new Database();
+module.exports = defineUserModel;
+/*Clase Database: Implementa un patrón Singleton para asegurarse de que siempre se use la misma instancia de la conexión a la base de datos en toda la aplicación.
+Método getSequelize: Devuelve la instancia de Sequelize para interactuar con la base de datos.
+Exportación: Exporta una instancia única de la clase para que pueda ser utilizada en cualquier parte del proyecto.*/
