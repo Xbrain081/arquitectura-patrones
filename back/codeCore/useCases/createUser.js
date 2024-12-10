@@ -3,8 +3,8 @@ class CreateUser {
         this.userRepository = userRepository;
     }
 
-    async execute(newUser) {
-        return await this.userRepository.create(newUser);
+    async execute(userData) {
+        return await this.userRepository.create(userData);
     }
 }
 

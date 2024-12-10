@@ -8,25 +8,33 @@
 //       - se realiza el approbal de los participantes 
 //       - se mergea la rama que saco uno de los participantes 
 
-// actividades: 
-// dylan: organizacion de carpetas y arquitectura
-// daniel: sequelize implemetacion en el codigo y base de datos
-// laura: revisar documentacion "clean architecture docs" y estudiar codigo. 
-
 const express = require('express');
-const Database = require('./codeCore/infraestructure/database');
-const UserRepository = require('./codeCore/interfaces/repositories/userRepository');
-const getUserController = require('./codeCore/interfaces/controllers/getUser');
+const Database = require('./codeCore/infraestructure/db');
+const UserRepository = require('./codeCore/interface/repositories/userRepository');
+const getUserController = require('./codeCore/interface/controllers/getUser');
+const getUsersController = require('./codeCore/interface/controllers/getUsers');
+const createUserController = require('./codeCore/interface/controllers/createUser');
+const deleteUserController = require('./codeCore/interface/controllers/deleteUser');
+const updateUserController = require('./codeCore/interface/controllers/updateUser');
+const partialUpdateUserController = require('./codeCore/interface/controllers/partialUpdateUser');
 
 const app = express();
+app.use(express.json());
+
 const port = 3000;
 
-//las instancias
+// Instancias para la conexion a la base de datos
 const database = new Database();
-const userRepository = new UserRepository(Database);
+const userRepository = new UserRepository(database);
 
+// Rutas
 app.get('/user/:id', getUserController(userRepository));
+app.get('/users', getUsersController(userRepository));
+app.post('/user/create', createUserController(userRepository));
+app.delete('/user/:id', deleteUserController(userRepository));
+app.put('/user/:id', updateUserController(userRepository));
+app.patch('/user/:id', partialUpdateUserController(userRepository));
 
 app.listen(port, () => {
-    console.log(`servidor activo en http://localhost:${port}`);
+    console.log(`Servidor activo en http://localhost:${port}`);
 });

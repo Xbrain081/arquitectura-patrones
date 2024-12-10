@@ -1,7 +1,8 @@
 class GetUser {
-    constructor(userRepository) {
+    constructor(userRepository) { // Dependency Injection
         this.userRepository = userRepository;
     }
+
     async execute(userId) {
         return await this.userRepository.findById(userId);
     }
