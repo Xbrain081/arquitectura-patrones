@@ -1,12 +1,12 @@
 const GetUsers = require('../../useCases/getUsers');
 
-const getUsersController = (userRepository) => async (req, res) => {
+const getUsersController = (userRepository) => async (request, response) => {
     try {
         const getUsers = new GetUsers(userRepository);
         const users = await getUsers.execute();
-        res.json(users);
+        response.json(users);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        response.status(500).json({ error: error.message });
     }
 };
 

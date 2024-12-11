@@ -1,13 +1,13 @@
 const UpdateUser = require('../../useCases/updateUser');
 
-const updateUserController = (userRepository) => async (req, res) => {
+const updateUserController = (userRepository) => async (request, response) => {
     try {
         const updateUser = new UpdateUser(userRepository);
-        const user = await updateUser.execute(req.params.id, req.body);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-        res.json(user);
+        const user = await updateUser.execute(request.params.id, request.body);
+        if (!user) return response.status(404).json({ message: 'User not found' });
+        response.json(user);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        response.status(500).json({ error: error.message });
     }
 };
 

@@ -1,12 +1,12 @@
 const CreateUser = require('../../useCases/createUser');
 
-const createUserController = (userRepository) => async (req, res) => {
+const createUserController = (userRepository) => async (request, response) => {
     try {
         const createUser = new CreateUser(userRepository);
-        const user = await createUser.execute(req.body);
-        res.status(201).json(user);
+        const user = await createUser.execute(request.body);
+        response.status(201).json(user);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        response.status(500).json({ error: error.message });
     }
 };
 

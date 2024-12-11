@@ -1,13 +1,13 @@
 const GetUser = require('../../useCases/getUser');
 
-const getUserController = (userRepository) => async (req, res) => {
+const getUserController = (userRepository) => async (request, response) => {
     try {
         const getUser = new GetUser(userRepository);
-        const user = await getUser.execute(req.params.id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-        res.json(user);
+        const user = await getUser.execute(request.params.id);
+        if (!user) return response.status(404).json({ message: 'User not found' });
+        response.json(user);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        response.status(500).json({ error: error.message });
     }
 };
 
