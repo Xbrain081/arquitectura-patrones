@@ -8,5 +8,3 @@ class User {
 }
 module.exports = User;
 
-//Porqué tan sencillo? 
-//Porque debe ser una lógica pura, lo q quiere decir q no debe depender de una logica externa
